@@ -37,6 +37,10 @@ namespace SistemaElevador.Model {
 
         public void SelecionarAndar() {
             try {
+                if (StatusPorta == StatusPortaEnum.Fechada) {
+                    throw new InvalidOperationException("Não é possível selecionar um andar com a porta fechada.");
+                }
+
                 Console.WriteLine("Digite o andar desejado");
 
                 string andarInput = Console.ReadLine();
@@ -57,10 +61,6 @@ namespace SistemaElevador.Model {
 
                 if (andarSelecionado < 0 || andarSelecionado > AndarMaximo) {
                     throw new InvalidOperationException("O andar selecionado é inválido.");
-                }
-
-                if (StatusPorta == StatusPortaEnum.Fechada) {
-                    throw new InvalidOperationException("Não é possível selecionar um andar com a porta fechada.");
                 }
 
                 if (AndarAtual == andarSelecionado) {
@@ -193,6 +193,8 @@ namespace SistemaElevador.Model {
                 Status = StatusElevadorEnum.Parado;
                 AndaresVisitados.Add(AndarAtual);
                 Console.WriteLine($"Andar {AndarAtual} visitado. Desembarque os passageiros.");
+                Console.WriteLine("\nPressione ENTER para continuar...");
+                Console.ReadLine();
                 AbrirPorta();
             }
         }
