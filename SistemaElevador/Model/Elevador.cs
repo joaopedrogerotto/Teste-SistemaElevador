@@ -150,15 +150,7 @@ namespace SistemaElevador.Model {
             }
 
             if (!Rota.Any()) {
-                if (AndarAtual == 0) {
-                    throw new InvalidOperationException("Não é possível fechar a porta enquanto não há destino definido.");
-                }
-
-                Status = StatusElevadorEnum.Parado;
-                StatusPorta = StatusPortaEnum.Aberta;
-
-                Console.WriteLine("Porta fechada.");
-                return;
+                throw new InvalidOperationException("Não é possível fechar a porta sem uma rota denifida.");
             }
 
             if (AndarAtual < Rota.First()) {
@@ -207,11 +199,6 @@ namespace SistemaElevador.Model {
                 Console.ReadLine();
                 AbrirPorta();
             }
-        }
-
-        public void Parar() {
-            Status = StatusElevadorEnum.Parado;
-            Console.WriteLine($"Elevador parado no andar {AndarAtual}.");
         }
     }
 }
