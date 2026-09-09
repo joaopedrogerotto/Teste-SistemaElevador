@@ -58,6 +58,15 @@ namespace SistemaElevador.Model {
                 }
 
                 int andarSelecionado = int.Parse(andarInput);
+                
+                if (andarSelecionado < 0 || andarSelecionado > AndarMaximo) {
+                    throw new InvalidOperationException("O andar selecionado é inválido.");
+                }
+
+                if (AndarAtual == andarSelecionado) {
+                    return;
+                }
+
 
                 if (Rota.Contains(andarSelecionado)) {
                     throw new InvalidOperationException("Não é possível adicionar um andar já selecionado na rota.");
@@ -67,13 +76,7 @@ namespace SistemaElevador.Model {
                     throw new InvalidOperationException("Não é possível adicionar um andar já visitado.");
                 }
 
-                if (andarSelecionado < 0 || andarSelecionado > AndarMaximo) {
-                    throw new InvalidOperationException("O andar selecionado é inválido.");
-                }
-
-                if (AndarAtual == andarSelecionado) {
-                    return;
-                }
+                
 
                 DefinirRota(andarSelecionado);
             } catch (FormatException fEx) {
