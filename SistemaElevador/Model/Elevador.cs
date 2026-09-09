@@ -10,13 +10,13 @@ namespace SistemaElevador.Model {
         public int AndarMaximo { get; set; }
         public int MaximoPassageiros { get; set; }
         public int QuantidadePassageiros { get; set; }
-        public StatusElevadorEnum Status {  get; set; }
+        public StatusElevadorEnum Status { get; set; }
         public StatusPortaEnum StatusPorta { get; set; }
         public List<int> Rota { get; set; }
         public List<int> AndaresVisitados { get; set; }
-        
+
         public void EmbarcarPassageiro() {
-            if(Status != StatusElevadorEnum.Parado || StatusPorta == StatusPortaEnum.Fechada) {
+            if (Status != StatusElevadorEnum.Parado || StatusPorta == StatusPortaEnum.Fechada) {
                 throw new InvalidOperationException("Não é possível embarcar passageiros enquanto o elevador está em movimento ou com a porta fechada.");
             }
 
@@ -40,62 +40,60 @@ namespace SistemaElevador.Model {
         }
 
         public void SelecionarAndar() {
-            try {
-                if (QuantidadePassageiros > MaximoPassageiros) {
-                    throw new InvalidOperationException("Não é possível movimentar o elevador com mais passageiros do que o máximo permitido.");
-                }
-
-                if (StatusPorta == StatusPortaEnum.Fechada) {
-                    throw new InvalidOperationException("Não é possível selecionar um andar com a porta fechada.");
-                }
-
-                Console.WriteLine("Digite o andar desejado");
-
-                string andarInput = Console.ReadLine();
-
-                if (string.IsNullOrEmpty(andarInput)) {
-                    throw new ArgumentException("O andar selecionado é inválido.");
-                }
-
-                int andarSelecionado = int.Parse(andarInput);
-                
-                if (andarSelecionado < 0 || andarSelecionado > AndarMaximo) {
-                    throw new InvalidOperationException("O andar selecionado é inválido.");
-                }
-
-                if (AndarAtual == andarSelecionado) {
-                    return;
-                }
-
-
-                if (Rota.Contains(andarSelecionado)) {
-                    throw new InvalidOperationException("Não é possível adicionar um andar já selecionado na rota.");
-                }
-
-                if (AndaresVisitados.Contains(andarSelecionado)) {
-                    throw new InvalidOperationException("Não é possível adicionar um andar já visitado.");
-                }
-
-                
-
-                DefinirRota(andarSelecionado);
-            } catch (FormatException fEx) {
-                throw new FormatException("Informe um numero de andar válido");
+            if (QuantidadePassageiros > MaximoPassageiros) {
+                throw new InvalidOperationException("Não é possível movimentar o elevador com mais passageiros do que o máximo permitido.");
             }
+
+            if (StatusPorta == StatusPortaEnum.Fechada) {
+                throw new InvalidOperationException("Não é possível selecionar um andar com a porta fechada.");
+            }
+
+            Console.WriteLine("Digite o andar desejado");
+
+            string andarInput = Console.ReadLine();
+
+            if (string.IsNullOrEmpty(andarInput)) {
+                throw new ArgumentException("O andar selecionado é inválido.");
+            }
+
+            if (!int.TryParse(andarInput, out int andarSelecionado)) {
+                throw new ArgumentException("O andar selecionado é inválido.");
+            }
+
+            if (andarSelecionado < 0 || andarSelecionado > AndarMaximo) {
+                throw new InvalidOperationException("O andar selecionado é inválido.");
+            }
+
+            if (AndarAtual == andarSelecionado) {
+                return;
+            }
+
+
+            if (Rota.Contains(andarSelecionado)) {
+                throw new InvalidOperationException("Não é possível adicionar um andar já selecionado na rota.");
+            }
+
+            if (AndaresVisitados.Contains(andarSelecionado)) {
+                throw new InvalidOperationException("Não é possível adicionar um andar já visitado.");
+            }
+
+
+
+            DefinirRota(andarSelecionado);
         }
 
         private void DefinirRota(int andarSelecionado) {
             if (Status == StatusElevadorEnum.Subindo) {
                 InserirSubida(andarSelecionado);
-            } else if(Status == StatusElevadorEnum.Descendo) {
+            } else if (Status == StatusElevadorEnum.Descendo) {
                 InserirDescida(andarSelecionado);
-            }else if(Status == StatusElevadorEnum.Parado) {
+            } else if (Status == StatusElevadorEnum.Parado) {
                 InserirParado(andarSelecionado);
             }
         }
-        
+
         private void InserirParado(int andarSelecionado) {
-            if(!Rota.Any()) {
+            if (!Rota.Any()) {
                 Rota.Add(andarSelecionado);
                 return;
             }
@@ -124,12 +122,12 @@ namespace SistemaElevador.Model {
             var frenteRota = Rota.Where(a => a > AndarAtual).ToList();
             var atrasRota = Rota.Where(a => a <= AndarAtual).ToList();
 
-            if(andarSelecionado > AndarAtual) {
+            if (andarSelecionado > AndarAtual) {
                 frenteRota.Add(andarSelecionado);
                 frenteRota.Sort();
             } else {
                 atrasRota.Add(andarSelecionado);
-                atrasRota.Sort((a,b) => b.CompareTo(a)); //Ordem decrescente
+                atrasRota.Sort((a, b) => b.CompareTo(a)); //Ordem decrescente
             }
 
             Rota = frenteRota.Concat(atrasRota).ToList();
@@ -171,7 +169,7 @@ namespace SistemaElevador.Model {
             Console.WriteLine("Porta fechada.");
         }
         public void AbrirPorta() {
-            if(Status != StatusElevadorEnum.Parado) {
+            if (Status != StatusElevadorEnum.Parado) {
                 throw new InvalidOperationException("Não é possível abrir a porta enquanto o elevador está em movimento.");
             }
 
@@ -180,8 +178,8 @@ namespace SistemaElevador.Model {
         }
 
         public void Movimentar() {
-            
-            if(StatusPorta != StatusPortaEnum.Fechada) {
+
+            if (StatusPorta != StatusPortaEnum.Fechada) {
                 throw new InvalidOperationException("Não é possível movimentar o elevador com a porta aberta.");
             }
 
