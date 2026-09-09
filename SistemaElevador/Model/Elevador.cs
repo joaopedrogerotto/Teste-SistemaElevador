@@ -199,12 +199,15 @@ namespace SistemaElevador.Model {
 
             if (AndarAtual == Rota.First()) {
                 Rota.RemoveAt(0);
+
                 Status = StatusElevadorEnum.Parado;
+                AbrirPorta();
+
                 AndaresVisitados.Add(AndarAtual);
+
                 Console.WriteLine($"Andar {AndarAtual} visitado. Desembarque os passageiros.");
                 Console.WriteLine("\nPressione ENTER para continuar...");
                 Console.ReadLine();
-                AbrirPorta();
             }
         }
     }
