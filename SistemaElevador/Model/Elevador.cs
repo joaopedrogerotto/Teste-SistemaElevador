@@ -145,12 +145,20 @@ namespace SistemaElevador.Model {
         }
 
         public void FecharPorta() {
-            if (!Rota.Any() && AndarAtual == 0) {
-                throw new InvalidOperationException("Não é possível fechar a porta enquanto não há destino definido.");
+            if (StatusPorta == StatusPortaEnum.Fechada) {
+                throw new InvalidOperationException("A porta já está fechada.");
             }
 
-            if(StatusPorta == StatusPortaEnum.Fechada) {
-                throw new InvalidOperationException("A porta já está fechada.");
+            if (!Rota.Any()) {
+                if (AndarAtual == 0) {
+                    throw new InvalidOperationException("Não é possível fechar a porta enquanto não há destino definido.");
+                }
+
+                Status = StatusElevadorEnum.Parado;
+                StatusPorta = StatusPortaEnum.Aberta;
+
+                Console.WriteLine("Porta fechada.");
+                return;
             }
 
             if (AndarAtual < Rota.First()) {
@@ -160,9 +168,9 @@ namespace SistemaElevador.Model {
             }
 
             StatusPorta = StatusPortaEnum.Fechada;
+
             Console.WriteLine("Porta fechada.");
         }
-
         public void AbrirPorta() {
             if(Status != StatusElevadorEnum.Parado) {
                 throw new InvalidOperationException("Não é possível abrir a porta enquanto o elevador está em movimento.");
