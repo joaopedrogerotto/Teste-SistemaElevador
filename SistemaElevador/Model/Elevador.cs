@@ -13,6 +13,7 @@ namespace SistemaElevador.Model {
         public StatusElevadorEnum Status {  get; set; }
         public StatusPortaEnum StatusPorta { get; set; }
         public List<int> Rota { get; set; }
+        public List<int> AndaresVisitados { get; set; }
         
         public void EmbarcarPassageiro() {
             if(Status != StatusElevadorEnum.Parado || StatusPorta == StatusPortaEnum.Fechada) {
@@ -43,6 +44,10 @@ namespace SistemaElevador.Model {
                     throw new InvalidOperationException("Não é possível adicionar um andar já selecionado na rota.");
                 }
 
+                if(AndaresVisitados.Contains(andarSelecionado)) {
+                    throw new InvalidOperationException("Não é possível adicionar um andar já visitado.");
+                }
+
                 if (andarSelecionado < 0 || andarSelecionado > AndarMaximo) {
                     throw new InvalidOperationException("O andar selecionado é inválido.");
                 }
@@ -71,7 +76,33 @@ namespace SistemaElevador.Model {
             } else if(Status == StatusElevadorEnum.Descendo) {
                 InserirDescida(andarSelecionado);
             }else if(Status == StatusElevadorEnum.Parado) {
+                InserirParado(andarSelecionado);
+            }
+        }
+        
+        private void InserirParado(int andarSelecionado) {
+            if(!Rota.Any()) {
                 Rota.Add(andarSelecionado);
+                return;
+            }
+
+            if (Rota.First() > AndarAtual) {
+
+                Rota.Add(andarSelecionado);
+
+                var acima = Rota.Where(a => a > AndarAtual).OrderBy(a => a);
+
+                var abaixo = Rota.Where(a => a < AndarAtual).OrderByDescending(a => a);
+
+                Rota = acima.Concat(abaixo).ToList();
+            } else {
+                Rota.Add(andarSelecionado);
+
+                var abaixo = Rota.Where(a => a < AndarAtual).OrderByDescending(a => a);
+
+                var acima = Rota.Where(a => a > AndarAtual).OrderBy(a => a);
+
+                Rota = abaixo.Concat(acima).ToList();
             }
         }
 
@@ -100,14 +131,14 @@ namespace SistemaElevador.Model {
                 frenteRota.Sort((a, b) => b.CompareTo(a));
             } else {
                 atrasRota.Add(andarSelecionado);
-                atrasRota.Sort(); //Ordem decrescente
+                atrasRota.Sort();
             }
 
             Rota = frenteRota.Concat(atrasRota).ToList();
         }
 
         public void FecharPorta() {
-            if (!Rota.Any()) {
+            if (!Rota.Any() && AndarAtual == 0) {
                 throw new InvalidOperationException("Não é possível fechar a porta enquanto não há destino definido.");
             }
 
@@ -153,6 +184,8 @@ namespace SistemaElevador.Model {
             if (AndarAtual == Rota.First()) {
                 Rota.RemoveAt(0);
                 Status = StatusElevadorEnum.Parado;
+                AndaresVisitados.Add(AndarAtual);
+                Console.WriteLine($"Andar {AndarAtual} visitado. Desembarque os passageiros.");
                 AbrirPorta();
             }
         }
