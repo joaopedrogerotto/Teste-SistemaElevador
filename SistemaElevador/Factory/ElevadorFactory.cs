@@ -18,7 +18,8 @@ namespace SistemaElevador.Factory {
                 QuantidadePassageiros = 0,
                 Status = StatusElevadorEnum.Parado,
                 StatusPorta = StatusPortaEnum.Aberta,
-                Rota = new List<int>()
+                Rota = new List<int>(),
+                AndaresVisitados = new List<int>()
             };
         }
     }

@@ -38,13 +38,20 @@ namespace SistemaElevador.Model {
         public void SelecionarAndar() {
             try {
                 Console.WriteLine("Digite o andar desejado");
-                int andarSelecionado = int.Parse(Console.ReadLine());
+
+                string andarInput = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(andarInput)) {
+                    throw new ArgumentException("O andar selecionado é inválido.");
+                }
+
+                int andarSelecionado = int.Parse(andarInput);
 
                 if (Rota.Contains(andarSelecionado)) {
                     throw new InvalidOperationException("Não é possível adicionar um andar já selecionado na rota.");
                 }
 
-                if(AndaresVisitados.Contains(andarSelecionado)) {
+                if (AndaresVisitados.Contains(andarSelecionado)) {
                     throw new InvalidOperationException("Não é possível adicionar um andar já visitado.");
                 }
 
@@ -52,11 +59,11 @@ namespace SistemaElevador.Model {
                     throw new InvalidOperationException("O andar selecionado é inválido.");
                 }
 
-                if(StatusPorta == StatusPortaEnum.Fechada) {
+                if (StatusPorta == StatusPortaEnum.Fechada) {
                     throw new InvalidOperationException("Não é possível selecionar um andar com a porta fechada.");
                 }
 
-                if(AndarAtual == andarSelecionado) {
+                if (AndarAtual == andarSelecionado) {
                     return;
                 }
 
@@ -146,12 +153,6 @@ namespace SistemaElevador.Model {
                 throw new InvalidOperationException("A porta já está fechada.");
             }
 
-            if (AndarAtual < Rota.First()) {
-                Status = StatusElevadorEnum.Subindo;
-            } else {
-                Status = StatusElevadorEnum.Descendo;
-            }
-
             StatusPorta = StatusPortaEnum.Fechada;
             Console.WriteLine("Porta fechada.");
         }
@@ -179,6 +180,12 @@ namespace SistemaElevador.Model {
                 AndarAtual++;
             } else if (Status == StatusElevadorEnum.Descendo) {
                 AndarAtual--;
+            }
+
+            if (AndarAtual < Rota.First()) {
+                Status = StatusElevadorEnum.Subindo;
+            } else {
+                Status = StatusElevadorEnum.Descendo;
             }
 
             if (AndarAtual == Rota.First()) {
