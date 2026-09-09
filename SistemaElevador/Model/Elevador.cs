@@ -153,6 +153,12 @@ namespace SistemaElevador.Model {
                 throw new InvalidOperationException("A porta já está fechada.");
             }
 
+            if (AndarAtual < Rota.First()) {
+                Status = StatusElevadorEnum.Subindo;
+            } else {
+                Status = StatusElevadorEnum.Descendo;
+            }
+
             StatusPorta = StatusPortaEnum.Fechada;
             Console.WriteLine("Porta fechada.");
         }
@@ -182,11 +188,7 @@ namespace SistemaElevador.Model {
                 AndarAtual--;
             }
 
-            if (AndarAtual < Rota.First()) {
-                Status = StatusElevadorEnum.Subindo;
-            } else {
-                Status = StatusElevadorEnum.Descendo;
-            }
+
 
             if (AndarAtual == Rota.First()) {
                 Rota.RemoveAt(0);
