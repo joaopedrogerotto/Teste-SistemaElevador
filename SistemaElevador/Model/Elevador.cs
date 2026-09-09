@@ -155,7 +155,7 @@ namespace SistemaElevador.Model {
             }
 
             if (!Rota.Any()) {
-                throw new InvalidOperationException("Não é possível fechar a porta sem uma rota denifida.");
+                throw new InvalidOperationException("Não é possível fechar a porta sem uma rota definida.");
             }
 
             if (AndarAtual < Rota.First()) {
