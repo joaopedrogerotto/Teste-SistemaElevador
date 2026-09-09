@@ -20,6 +20,10 @@ namespace SistemaElevador.Model {
                 throw new InvalidOperationException("Não é possível embarcar passageiros enquanto o elevador está em movimento ou com a porta fechada.");
             }
 
+            if (QuantidadePassageiros >= MaximoPassageiros) {
+                throw new InvalidOperationException("O elevador está cheio.");
+            }
+
             QuantidadePassageiros++;
         }
 
@@ -37,6 +41,10 @@ namespace SistemaElevador.Model {
 
         public void SelecionarAndar() {
             try {
+                if (QuantidadePassageiros > MaximoPassageiros) {
+                    throw new InvalidOperationException("Não é possível movimentar o elevador com mais passageiros do que o máximo permitido.");
+                }
+
                 if (StatusPorta == StatusPortaEnum.Fechada) {
                     throw new InvalidOperationException("Não é possível selecionar um andar com a porta fechada.");
                 }
@@ -74,10 +82,6 @@ namespace SistemaElevador.Model {
         }
 
         private void DefinirRota(int andarSelecionado) {
-            if (QuantidadePassageiros > MaximoPassageiros) {
-                throw new InvalidOperationException("Não é possível movimentar o elevador com mais passageiros do que o máximo permitido.");
-            }
-
             if (Status == StatusElevadorEnum.Subindo) {
                 InserirSubida(andarSelecionado);
             } else if(Status == StatusElevadorEnum.Descendo) {
